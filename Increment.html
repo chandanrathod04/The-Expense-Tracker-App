@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Document</title>
+    <link
+			rel="stylesheet"
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+			integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+			crossorigin="anonymous"
+		/>
+        <script
+			defer
+			src="https://use.fontawesome.com/releases/v5.7.2/js/all.js"
+			integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP"
+			crossorigin="anonymous"
+		></script>
+</head>
+<body>
+
+    <nav class="navbar navbar-dark bg-dark">
+			<span class="navbar-brand mb-0 h1">The Expense Tracker App</span>
+            <span class="navbar-brand mb-0 h1" id="hed"></span>
+		</nav>
+        <div class="container-fluid bg-light" style="min-height: 100vh">
+			<div class="container">
+                <div class="jumbotron mt-4">
+					<div class="input-group mb-3">
+						<input
+							type="text"
+							class="form-control"
+							placeholder="Amount spent"
+                            id="inpamt"
+							aria-label="Amount spent"
+							aria-describedby="spent in rupee"
+						/>
+						<div class="input-group-append">
+							<span class="input-group-text" id="spent in rupee">₹</span>
+						</div>
+					</div>
+					<div class="input-group mb-3">
+						<div class="input-group-prepend">
+							<span class="input-group-text" id="spent at">@</span>
+						</div>
+						<input
+							type="text"
+							class="form-control"
+							placeholder="spent On"
+                            id="inpdesc"
+							aria-label="spent On"
+							aria-describedby="spent at"
+						/>
+						<div class="input-group-append">
+							<button class="btn btn-outline-primary" type="button"  id="btn">Add</button>
+						</div>
+					</div>
+				</div>
+  
+    <div id="show">
+        <div id="expenseTable"></div>
+    </div>
+    </div>
+    </div>
+    
+    <script>
+        //array creation
+         const allItems=[];
+
+         let totalExp=0;
+    
+         const ele= document.querySelector("#inpamt");
+
+         const inpDesc=document.querySelector("#inpdesc");         
+
+         const headEle=document.querySelector("#hed");
+
+         const expTotal=document.querySelector("#expenseTable");
+
+        //set heading to totalexpense
+        headEle.textContent=totalExp;
+        function increment1()
+        { 
+            //object creation
+        const expenseItems={};
+        //storing amount
+        const textAmount=ele.value;
+
+        const textDesc=inpDesc.value;
+        //converting string into int(text is for string because that converting)
+        const expense=parseInt(textAmount,10);
+   
+        //copying values to object expenseItem
+        expenseItems.textDesc= textDesc;
+        expenseItems.textAmount= textAmount;
+        expenseItems.moment= new Date();
+
+        console.log(expenseItems);
+
+        allItems.push(expenseItems);
+
+        // console.clear();
+        // console.table(allItems);
+
+        //templating
+        totalExp=totalExp+expense;     
+        const someText=`The Total expense is: ${totalExp}`;
+
+        headEle.textContent=someText;
+
+
+        //showing data in to table
+        // const data1=allItems[0];
+        // const data2=allItems[1];
+
+        // const data1s=`${data1.textAmount}::${data1.textDesc}`;
+        // const data2s=`${data2.textAmount}::${data2.textDesc}`;
+
+        // const  tableText=`
+        // <div>${data1s}</div>
+        // <div>${data2s}</div>
+        // `;
+
+        // const allshow=allItems.map(item => createListItem(item));
+        // const alljoin =allshow.join("");
+        // expTotal.innerHTML=alljoin;
+        renderList(allItems);
+        }
+        //storing element into variable 
+        const element= document.querySelector("#btn");
+        //use eventlistener for increment
+        element.addEventListener("click" ,increment1 , false);
+
+
+        function getDate1(moment)
+        {
+         return moment.toLocaleDateString('en-US',{
+                                 year:'numeric',
+                                 month:'long',
+                                 day:'numeric'
+                                })
+        }
+        function deleteItem(dateValue){
+            // const newArr=[];
+            // for(let i=0;i<allItems.length;i++){
+            //     if(allItems[i].moment.valueOf()!==dateValue){
+            //      newArr.push(allItems[i]);   
+            //     }
+            // }
+
+            const newArr=allItems.filter(expense=>{
+                if(expense.moment.valueOf()!==dateValue){
+                 return expense;
+              }
+            })
+            renderList(newArr);
+        }
+        function renderList(arrlist){
+            const allshow=arrlist.map(item => createListItem(item));
+            const alljoin =allshow.join("");
+            expTotal.innerHTML=alljoin;
+        }
+        function createListItem({textDesc,textAmount,moment})
+        {
+            return `
+            <li class="list-group-item d-flex justify-content-between">
+							<div class="d-flex flex-column">
+								${textDesc}
+								<small class="text-muted">${getDate1(moment)}</small>
+							</div>
+							<div>
+								<span class="px-5">
+									${textAmount}
+								</span>
+								<button 
+                                type="button"
+                                 class="btn btn-outline-danger btn-sm"
+                                 onClick="deleteItem(${moment.valueOf()})">
+									<i class="fas fa-trash-alt"></i>
+								</button>
+							</div>
+						</li>
+            `;  
+        }
+    </script>
+</body>
+</html>
